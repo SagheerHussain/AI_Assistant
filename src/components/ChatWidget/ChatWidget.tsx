@@ -58,6 +58,13 @@ export default function ChatWidget() {
   const inputRef = useRef<HTMLInputElement>(null);
   const chatBodyRef = useRef<HTMLDivElement>(null);
 
+  // Message ID counter
+  const msgIdCounter = useRef(1);
+  const getNextId = useCallback((prefix: string) => {
+    msgIdCounter.current += 1;
+    return `${prefix}-${msgIdCounter.current}`;
+  }, []);
+
   // Auto scroll to bottom
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -66,41 +73,34 @@ export default function ChatWidget() {
   useEffect(() => {
     if (isOpen) {
       scrollToBottom();
-      setHasUnread(false);
-      setTimeout(() => inputRef.current?.focus(), 100);
+      const timer = setTimeout(() => inputRef.current?.focus(), 100);
+      return () => clearTimeout(timer);
     }
   }, [isOpen, scrollToBottom]);
 
   useEffect(() => {
     if (isOpen) {
       scrollToBottom();
-    } else if (messages.length > 1) {
-      setHasUnread(true);
     }
   }, [messages, isOpen, scrollToBottom]);
 
-  const handleSendRef = useRef(handleSend);
-  handleSendRef.current = handleSend;
-
+  // Keep input & messages visible when mobile virtual keyboard opens
   useEffect(() => {
-    const handleOpenChat = (e: Event) => {
-      const customEvent = e as CustomEvent<{ query?: string }>;
-      setIsOpen(true);
-      if (customEvent.detail?.query) {
-        setTimeout(() => {
-          handleSendRef.current?.(customEvent.detail.query);
-        }, 120);
+    if (typeof window === 'undefined' || !window.visualViewport) return;
+    const handleViewportResize = () => {
+      if (isOpen) {
+        scrollToBottom();
       }
     };
-    window.addEventListener('open-festival-chat', handleOpenChat);
+    window.visualViewport.addEventListener('resize', handleViewportResize);
     return () => {
-      window.removeEventListener('open-festival-chat', handleOpenChat);
+      window.visualViewport?.removeEventListener('resize', handleViewportResize);
     };
-  }, []);
+  }, [isOpen, scrollToBottom]);
 
-  function addAssistantMessage(response: ChatResponse) {
+  const addAssistantMessage = useCallback((response: ChatResponse) => {
     const msg: Message = {
-      id: `msg-${Date.now()}`,
+      id: getNextId('msg'),
       role: 'assistant',
       content: response.message,
       festivals: response.festivals,
@@ -109,14 +109,14 @@ export default function ChatWidget() {
     };
     setMessages((prev) => [...prev, msg]);
     setIsTyping(false);
-  }
+  }, [getNextId]);
 
-  function handleSend(text?: string) {
+  const handleSend = useCallback((text?: string) => {
     const query = (text ?? input).trim();
     if (!query) return;
 
     const userMessage: Message = {
-      id: `user-${Date.now()}`,
+      id: getNextId('user'),
       role: 'user',
       content: query,
       timestamp: new Date(),
@@ -126,8 +126,8 @@ export default function ChatWidget() {
     setInput('');
     setIsTyping(true);
 
-    // Simulate AI "thinking" delay
-    const delay = 600 + Math.random() * 600;
+    // Controlled delay
+    const delay = 650;
     setTimeout(() => {
       let response: ChatResponse;
 
@@ -140,7 +140,30 @@ export default function ChatWidget() {
 
       addAssistantMessage(response);
     }, delay);
-  }
+  }, [input, getNextId, addAssistantMessage]);
+
+  const handleSendRef = useRef(handleSend);
+  useEffect(() => {
+    handleSendRef.current = handleSend;
+  }, [handleSend]);
+
+  useEffect(() => {
+    const handleOpenChat = (e: Event) => {
+      const customEvent = e as CustomEvent<{ query?: string }>;
+      setIsOpen(true);
+      setHasUnread(false);
+      if (customEvent.detail?.query) {
+        const query = customEvent.detail.query;
+        setTimeout(() => {
+          handleSendRef.current(query);
+        }, 120);
+      }
+    };
+    window.addEventListener('open-festival-chat', handleOpenChat);
+    return () => {
+      window.removeEventListener('open-festival-chat', handleOpenChat);
+    };
+  }, []);
 
   function handleKeyDown(e: React.KeyboardEvent) {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -150,7 +173,13 @@ export default function ChatWidget() {
   }
 
   function handleToggle() {
-    setIsOpen((prev) => !prev);
+    setIsOpen((prev) => {
+      const next = !prev;
+      if (next) {
+        setHasUnread(false);
+      }
+      return next;
+    });
   }
 
   function handleSuggestion(suggestion: string) {

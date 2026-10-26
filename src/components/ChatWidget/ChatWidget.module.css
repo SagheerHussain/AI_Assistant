@@ -459,23 +459,173 @@
   box-shadow: none;
 }
 
-/* === Mobile === */
+/* === Mobile Responsiveness === */
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .panel {
-    bottom: 0;
-    right: 0;
-    left: 0;
-    width: 100%;
-    border-radius: 16px 16px 0 0;
-    height: min(85dvh, 600px);
+    /* Safe spacing around screen edges: 8px from top, bottom, left, right */
+    position: fixed;
+    top: max(8px, env(safe-area-inset-top));
+    bottom: max(8px, env(safe-area-inset-bottom));
+    left: max(8px, env(safe-area-inset-left));
+    right: max(8px, env(safe-area-inset-right));
+    width: auto;
+    height: auto;
+    max-height: calc(100dvh - 16px);
+    border-radius: 14px;
+    border: 2px solid #13120F;
+    box-shadow: 0 10px 32px rgba(19, 18, 15, 0.4);
+    z-index: 1005;
     transform-origin: bottom center;
-    border-bottom: none;
-    box-shadow: 0 -4px 0 #13120F;
   }
 
   .floatBtn {
-    bottom: 20px;
-    right: 16px;
+    bottom: max(16px, env(safe-area-inset-bottom));
+    right: max(16px, env(safe-area-inset-right));
+    width: 52px;
+    height: 52px;
+    box-shadow: 2px 2px 0 #13120F;
+    z-index: 1000;
+  }
+
+  .floatBtnImg {
+    width: 38px;
+    height: 38px;
+  }
+
+  /* When chat is open on mobile, launcher fades away so it NEVER covers message input or send button */
+  .floatBtnOpen {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.7);
+  }
+
+  .header {
+    padding: 12px 14px;
+  }
+
+  .headerTitle {
+    font-size: 0.9rem;
+  }
+
+  .closeBtn {
+    width: 34px;
+    height: 34px;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .disclaimer {
+    font-size: 0.68rem;
+    padding: 6px 10px;
+  }
+
+  .body {
+    padding: 12px 10px;
+    gap: 12px;
+  }
+
+  .msgContent {
+    max-width: calc(100% - 34px);
+  }
+
+  .msgBubble {
+    font-size: 0.85rem;
+    padding: 10px 12px;
+  }
+
+  .suggestions {
+    gap: 6px;
+  }
+
+  .suggestionChip {
+    font-size: 0.76rem;
+    padding: 6px 11px;
+    min-height: 32px;
+  }
+
+  .inputArea {
+    padding: 10px 10px max(10px, env(safe-area-inset-bottom));
+    gap: 8px;
+    background: #F4ECE9;
+  }
+
+  .input {
+    font-size: 16px; /* Prevents auto-zoom on iOS Safari */
+    padding: 10px 12px;
+    border-radius: 8px;
+  }
+
+  .sendBtn {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* Extra small mobile screens (320px - 360px) */
+@media (max-width: 360px) {
+  .panel {
+    top: max(4px, env(safe-area-inset-top));
+    bottom: max(4px, env(safe-area-inset-bottom));
+    left: max(4px, env(safe-area-inset-left));
+    right: max(4px, env(safe-area-inset-right));
+    border-radius: 10px;
+    max-height: calc(100dvh - 8px);
+  }
+
+  .header {
+    padding: 10px 12px;
+  }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .headerTitle {
+    font-size: 0.82rem;
+  }
+
+  .headerSub {
+    font-size: 0.65rem;
+  }
+
+  .body {
+    padding: 10px 8px;
+  }
+
+  .msgAvatar {
+    width: 24px;
+    height: 24px;
+  }
+
+  .msgContent {
+    max-width: calc(100% - 30px);
+  }
+
+  .msgBubble {
+    font-size: 0.8rem;
+    padding: 8px 10px;
+  }
+
+  .inputArea {
+    padding: 8px 8px max(8px, env(safe-area-inset-bottom));
+    gap: 6px;
+  }
+
+  .input {
+    font-size: 16px;
+    padding: 8px 10px;
+  }
+
+  .sendBtn {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
   }
 }

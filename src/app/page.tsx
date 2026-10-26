@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import ChatWidget from '@/components/ChatWidget/ChatWidget';
 import styles from './page.module.css';
 import { FESTIVALS, Festival } from '@/data/festivals';
@@ -23,6 +24,7 @@ const GENRE_TAGS = [
 
 export default function HomePage() {
   const [heroSearch, setHeroSearch] = useState('');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const triggerChat = (query?: string) => {
     if (typeof window !== 'undefined') {
@@ -44,7 +46,7 @@ export default function HomePage() {
       {/* ===== NAV ===== */}
       <header className={styles.nav} role="banner">
         <div className={styles.navInner}>
-          <a href="/" className={styles.logo} aria-label="That Festival Site Home">
+          <Link href="/" className={styles.logo} aria-label="That Festival Site Home">
             <Image
               src="/logo.png"
               alt="That Festival Site Logo"
@@ -56,12 +58,16 @@ export default function HomePage() {
             <span className={styles.logoText}>
               That Festival Site <span className={styles.logoBadge}>AI Demo</span>
             </span>
-          </a>
+          </Link>
+
+          {/* Desktop Nav Links */}
           <nav className={styles.navLinks} aria-label="Primary">
             <a href="#festivals" className={styles.navLink}>Festivals</a>
             <a href="#genres" className={styles.navLink}>Genres</a>
             <a href="#how" className={styles.navLink}>How It Works</a>
           </nav>
+
+          {/* Desktop Nav CTA */}
           <div className={styles.navCta}>
             <button
               onClick={() => triggerChat()}
@@ -71,6 +77,74 @@ export default function HomePage() {
               Ask AI Assistant ✦
             </button>
             <span className={styles.navDemoBadge}>⚠ Fictional Demo Data</span>
+          </div>
+
+          {/* Mobile Actions: Compact Chat trigger + Hamburger Toggle */}
+          <div className={styles.mobileNavActions}>
+            <button
+              onClick={() => triggerChat()}
+              className={styles.mobileNavChatBtn}
+              aria-label="Open AI Assistant"
+            >
+              Ask AI ✦
+            </button>
+            <button
+              type="button"
+              className={styles.hamburgerBtn}
+              onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-nav-menu"
+            >
+              <span className={`${styles.hamburgerLine} ${isMobileMenuOpen ? styles.hamburgerLineOpen1 : ''}`} />
+              <span className={`${styles.hamburgerLine} ${isMobileMenuOpen ? styles.hamburgerLineOpen2 : ''}`} />
+              <span className={`${styles.hamburgerLine} ${isMobileMenuOpen ? styles.hamburgerLineOpen3 : ''}`} />
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Navigation Drawer */}
+        <div
+          id="mobile-nav-menu"
+          className={`${styles.mobileMenu} ${isMobileMenuOpen ? styles.mobileMenuOpen : ''}`}
+          aria-hidden={!isMobileMenuOpen}
+        >
+          <div className={styles.mobileMenuInner}>
+            <a
+              href="#festivals"
+              className={styles.mobileNavLink}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              🎪 Festivals
+            </a>
+            <a
+              href="#genres"
+              className={styles.mobileNavLink}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              🎵 Browse Genres
+            </a>
+            <a
+              href="#how"
+              className={styles.mobileNavLink}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              💡 How It Works
+            </a>
+            <div className={styles.mobileMenuDivider} />
+            <button
+              type="button"
+              className={styles.mobileMenuChatBtn}
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                triggerChat();
+              }}
+            >
+              Ask AI Assistant ✦
+            </button>
+            <div className={styles.mobileMenuBadge}>
+              ⚠️ All festival listings & dates are fictional demo data
+            </div>
           </div>
         </div>
       </header>

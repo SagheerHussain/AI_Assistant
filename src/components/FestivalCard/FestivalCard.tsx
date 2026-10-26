@@ -14,7 +14,6 @@ function formatDate(dateStr: string): string {
 }
 
 function formatDateRange(start: string, end: string): string {
-  const s = new Date(start);
   const e = new Date(end);
   const year = e.getFullYear();
   return `${formatDate(start)} – ${formatDate(end)}, ${year}`;
