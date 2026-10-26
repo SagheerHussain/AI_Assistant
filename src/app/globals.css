@@ -1,0 +1,113 @@
+/* =============================================
+   FESTIVAL AI ASSISTANT — Global Design System
+   Inspired by the editorial warmth of festival listing sites.
+   All festival data shown is entirely fictional (demo only).
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Karla:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* Warm earthy palette — inspired by thatfestivalsite.com */
+  --color-bg: #F4ECE9;
+  --color-bg-alt: #EDE3DF;
+  --color-surface: #FFFFFF;
+  --color-surface-warm: #FBF7F5;
+  --color-ink: #13120F;
+  --color-ink-secondary: #4A4540;
+  --color-ink-muted: #9A8F8A;
+  --color-border: #DDD3CE;
+  --color-border-light: #EDE3DF;
+
+  /* Brand accent — terracotta */
+  --color-accent: #DF6845;
+  --color-accent-dark: #C4502F;
+  --color-accent-light: #F5D5C8;
+  --color-accent-bg: #FDF0EB;
+
+  /* Secondary tones */
+  --color-sage: #7A9E7E;
+  --color-gold: #C89B3C;
+  --color-clay: #B5784A;
+
+  /* Typography */
+  --font-body: 'Karla', 'Arial', sans-serif;
+  --font-display: 'Playfair Display', Georgia, serif;
+
+  /* Spacing */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.25s ease;
+
+  color-scheme: light;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* === Accessibility === */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+/* === Typography === */
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-display);
+  line-height: 1.2;
+  color: var(--color-ink);
+}
+
+a {
+  color: var(--color-ink);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-accent);
+}
+
+/* === Scrollbar === */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-accent) var(--color-bg-alt);
+}
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--color-bg-alt); }
+::-webkit-scrollbar-thumb { background: var(--color-accent); border-radius: 10px; }
